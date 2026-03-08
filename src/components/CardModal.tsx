@@ -45,7 +45,7 @@ const CardModal = () => {
             exit={{ scale: 0.7, opacity: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             onClick={(e) => e.stopPropagation()}
-            className="relative z-10 w-full max-w-md mx-4"
+            className="relative z-10 w-full max-w-md mx-0 md:mx-4 mb-0 md:mb-0"
           >
             <button
               onClick={handleClose}
