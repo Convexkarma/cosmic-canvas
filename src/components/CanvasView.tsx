@@ -201,6 +201,11 @@ const CanvasView = () => {
                       maxWidth: 110,
                     }}
                   >
+                    {cp.isDue && (
+                      <span className="absolute -top-2 -right-2 rounded-full bg-cosmic-hard/90 text-[7px] font-mono text-foreground px-1.5 py-0.5 leading-none shadow-lg animate-pulse">
+                        DUE
+                      </span>
+                    )}
                     <span className="font-mono text-[10px] text-foreground leading-tight line-clamp-2 block">
                       {cp.title}
                     </span>
