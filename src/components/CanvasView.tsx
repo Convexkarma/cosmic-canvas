@@ -45,7 +45,7 @@ const CanvasView = () => {
 
   // Calculate card positions
   const cardPositions = useMemo(() => {
-    const positions: { id: string; x: number; y: number; title: string; difficulty: string | null; subtopic: string }[] = [];
+    const positions: { id: string; x: number; y: number; title: string; difficulty: string | null; subtopic: string; isDue: boolean }[] = [];
     subtopics.forEach((st) => {
       const cardCount = st.cards.length;
       const cardRadius = 130;
@@ -60,6 +60,7 @@ const CanvasView = () => {
           title: card.title,
           difficulty: card.difficulty,
           subtopic: card.subtopic,
+          isDue: isCardDue(card),
         });
       });
     });
