@@ -49,7 +49,7 @@ const CardModal = () => {
           >
             <button
               onClick={handleClose}
-              className="absolute -top-10 right-0 text-muted-foreground hover:text-foreground transition-colors"
+              className="absolute -top-10 right-4 md:right-0 text-muted-foreground hover:text-foreground transition-colors"
             >
               <X className="h-6 w-6" />
             </button>
