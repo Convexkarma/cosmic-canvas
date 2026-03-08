@@ -5,6 +5,7 @@ import { useCardStore } from '@/stores/useCardStore';
 import { ArrowLeft, MessageCircle, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import Starfield from './Starfield';
 import CardModal from './CardModal';
+import AiPanel from './AiPanel';
 
 const difficultyGlow: Record<string, string> = {
   easy: 'glow-easy',
@@ -217,6 +218,7 @@ const CanvasView = () => {
       </TransformWrapper>
 
       <CardModal />
+      <AiPanel />
     </div>
   );
 };
