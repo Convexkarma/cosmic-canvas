@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, Sparkles, MessageCircle, BookOpen, Loader2, RefreshCw } from 'lucide-react';
+import { X, Send, Sparkles, MessageCircle, BookOpen, Loader2, RefreshCw, ChevronDown } from 'lucide-react';
 import { useCardStore } from '@/stores/useCardStore';
 import { streamChat, streamSummary } from '@/lib/api';
+import { useIsMobile } from '@/hooks/use-mobile';
 import ReactMarkdown from 'react-markdown';
 
 const AiPanel = () => {
@@ -14,6 +15,7 @@ const AiPanel = () => {
   const [activeTab, setActiveTab] = useState<'chat' | 'summary'>('chat');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const summaryEndRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -80,151 +82,181 @@ const AiPanel = () => {
     });
   };
 
+  // Animation variants based on device
+  const panelVariants = isMobile
+    ? { initial: { y: '100%' }, animate: { y: 0 }, exit: { y: '100%' } }
+    : { initial: { x: 400, opacity: 0 }, animate: { x: 0, opacity: 1 }, exit: { x: 400, opacity: 0 } };
+
+  const panelClassName = isMobile
+    ? 'fixed left-0 right-0 bottom-0 z-40 h-[70vh] rounded-t-2xl bg-card/95 backdrop-blur-xl cosmic-border border-t flex flex-col'
+    : 'fixed right-0 top-0 bottom-0 z-40 w-[380px] max-w-full bg-card/95 backdrop-blur-xl cosmic-border border-l flex flex-col';
+
+  const panelContent = (
+    <>
+      {/* Header */}
+      <div className="flex items-center justify-between p-3 md:p-4 border-b border-border/30 shrink-0">
+        {isMobile && (
+          <div className="absolute top-2 left-1/2 -translate-x-1/2 w-10 h-1 rounded-full bg-muted-foreground/30" />
+        )}
+        <div className="flex items-center gap-2">
+          <Sparkles className="h-4 w-4 text-primary" />
+          <span className="font-display text-sm font-semibold text-foreground">AI Assistant</span>
+        </div>
+        <button onClick={toggleAiPanel} className="text-muted-foreground hover:text-foreground transition-colors">
+          {isMobile ? <ChevronDown className="h-5 w-5" /> : <X className="h-4 w-4" />}
+        </button>
+      </div>
+
+      {/* Tab switcher */}
+      <div className="flex gap-1 mx-3 md:mx-4 mt-2 md:mt-3 mb-2 p-1 rounded-lg bg-muted/20 shrink-0">
+        <button
+          onClick={() => setActiveTab('chat')}
+          className={`flex-1 flex items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-mono transition-all ${
+            activeTab === 'chat'
+              ? 'bg-background text-foreground shadow-sm'
+              : 'text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          <MessageCircle className="h-3 w-3" /> Chat
+        </button>
+        <button
+          onClick={() => setActiveTab('summary')}
+          className={`flex-1 flex items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-mono transition-all ${
+            activeTab === 'summary'
+              ? 'bg-background text-foreground shadow-sm'
+              : 'text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          <BookOpen className="h-3 w-3" /> Summary
+        </button>
+      </div>
+
+      {/* Chat tab */}
+      {activeTab === 'chat' && (
+        <div className="flex-1 flex flex-col min-h-0 px-3 md:px-4 pb-3 md:pb-4">
+          <div className="flex-1 overflow-y-auto space-y-3 py-3">
+            {chatMessages.length === 0 && (
+              <p className="text-xs text-muted-foreground text-center mt-8 font-mono">
+                Ask anything about <span className="text-primary">{topic}</span>
+              </p>
+            )}
+            {chatMessages.map((msg, i) => (
+              <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`max-w-[85%] rounded-lg px-3 py-2 text-xs font-mono ${
+                  msg.role === 'user'
+                    ? 'bg-primary/20 text-foreground'
+                    : 'bg-muted/30 text-foreground'
+                }`}>
+                  <div className="prose prose-sm prose-invert max-w-none [&_p]:my-1 [&_ul]:my-1 [&_ol]:my-1 [&_li]:my-0.5 text-xs">
+                    <ReactMarkdown>{msg.content}</ReactMarkdown>
+                  </div>
+                </div>
+              </div>
+            ))}
+            {isStreaming && chatMessages[chatMessages.length - 1]?.role !== 'assistant' && (
+              <div className="flex justify-start">
+                <Loader2 className="h-4 w-4 animate-spin text-primary" />
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          <div className="relative shrink-0 pb-safe">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
+              placeholder="Ask a question..."
+              disabled={isStreaming}
+              className="w-full rounded-lg bg-muted/30 cosmic-border px-3 py-2.5 pr-10 text-xs font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 disabled:opacity-50"
+            />
+            <button
+              onClick={handleSend}
+              disabled={isStreaming || !input.trim()}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors disabled:opacity-30"
+            >
+              <Send className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Summary tab */}
+      {activeTab === 'summary' && (
+        <div className="flex-1 flex flex-col min-h-0 px-3 md:px-4 pb-3 md:pb-4">
+          <div className="flex-1 overflow-y-auto py-3">
+            {!summary && !isSummarizing && (
+              <div className="flex flex-col items-center gap-4 mt-8">
+                <BookOpen className="h-8 w-8 text-muted-foreground/50" />
+                <p className="text-xs text-muted-foreground text-center font-mono">
+                  Generate a comprehensive summary of<br />
+                  <span className="text-primary font-semibold">{topic}</span>
+                </p>
+                <button
+                  onClick={handleSummarize}
+                  className="rounded-lg bg-primary px-5 py-2.5 text-xs font-display font-semibold text-primary-foreground hover:brightness-110 active:scale-95 transition-all"
+                >
+                  Generate Summary
+                </button>
+              </div>
+            )}
+            {(summary || isSummarizing) && (
+              <div className="prose prose-sm prose-invert max-w-none text-xs font-mono leading-relaxed
+                [&_p]:my-2
+                [&_h3]:text-sm [&_h3]:font-display [&_h3]:text-accent [&_h3]:mt-4 [&_h3]:mb-2
+                [&_h2]:text-sm [&_h2]:font-display [&_h2]:text-accent [&_h2]:mt-4 [&_h2]:mb-2
+                [&_strong]:text-primary
+                [&_ul]:my-2 [&_ol]:my-2 [&_li]:my-1
+                [&_a]:text-primary [&_a]:underline">
+                <ReactMarkdown>{summary}</ReactMarkdown>
+                {isSummarizing && (
+                  <div className="flex items-center gap-2 mt-3">
+                    <Loader2 className="h-3 w-3 animate-spin text-primary" />
+                    <span className="text-[10px] text-muted-foreground">Generating...</span>
+                  </div>
+                )}
+                <div ref={summaryEndRef} />
+              </div>
+            )}
+          </div>
+          {summary && !isSummarizing && (
+            <button
+              onClick={handleSummarize}
+              className="shrink-0 flex items-center justify-center gap-2 rounded-lg cosmic-border px-3 py-2 text-xs font-mono text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <RefreshCw className="h-3 w-3" /> Regenerate Summary
+            </button>
+          )}
+        </div>
+      )}
+    </>
+  );
+
   return (
     <AnimatePresence>
       {aiPanelOpen && (
-        <motion.div
-          initial={{ x: 400, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: 400, opacity: 0 }}
-          transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-          className="fixed right-0 top-0 bottom-0 z-40 w-[380px] max-w-full bg-card/95 backdrop-blur-xl cosmic-border border-l flex flex-col"
-        >
-          {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-border/30 shrink-0">
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-primary" />
-              <span className="font-display text-sm font-semibold text-foreground">AI Assistant</span>
-            </div>
-            <button onClick={toggleAiPanel} className="text-muted-foreground hover:text-foreground transition-colors">
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-
-          {/* Tab switcher */}
-          <div className="flex gap-1 mx-4 mt-3 mb-2 p-1 rounded-lg bg-muted/20 shrink-0">
-            <button
-              onClick={() => setActiveTab('chat')}
-              className={`flex-1 flex items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-mono transition-all ${
-                activeTab === 'chat'
-                  ? 'bg-background text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              <MessageCircle className="h-3 w-3" /> Chat
-            </button>
-            <button
-              onClick={() => setActiveTab('summary')}
-              className={`flex-1 flex items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-mono transition-all ${
-                activeTab === 'summary'
-                  ? 'bg-background text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              <BookOpen className="h-3 w-3" /> Summary
-            </button>
-          </div>
-
-          {/* Chat tab */}
-          {activeTab === 'chat' && (
-            <div className="flex-1 flex flex-col min-h-0 px-4 pb-4">
-              <div className="flex-1 overflow-y-auto space-y-3 py-3">
-                {chatMessages.length === 0 && (
-                  <p className="text-xs text-muted-foreground text-center mt-8 font-mono">
-                    Ask anything about <span className="text-primary">{topic}</span>
-                  </p>
-                )}
-                {chatMessages.map((msg, i) => (
-                  <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[85%] rounded-lg px-3 py-2 text-xs font-mono ${
-                      msg.role === 'user'
-                        ? 'bg-primary/20 text-foreground'
-                        : 'bg-muted/30 text-foreground'
-                    }`}>
-                      <div className="prose prose-sm prose-invert max-w-none [&_p]:my-1 [&_ul]:my-1 [&_ol]:my-1 [&_li]:my-0.5 text-xs">
-                        <ReactMarkdown>{msg.content}</ReactMarkdown>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-                {isStreaming && chatMessages[chatMessages.length - 1]?.role !== 'assistant' && (
-                  <div className="flex justify-start">
-                    <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                  </div>
-                )}
-                <div ref={messagesEndRef} />
-              </div>
-
-              <div className="relative shrink-0">
-                <input
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
-                  placeholder="Ask a question..."
-                  disabled={isStreaming}
-                  className="w-full rounded-lg bg-muted/30 cosmic-border px-3 py-2.5 pr-10 text-xs font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 disabled:opacity-50"
-                />
-                <button
-                  onClick={handleSend}
-                  disabled={isStreaming || !input.trim()}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors disabled:opacity-30"
-                >
-                  <Send className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
+        <>
+          {/* Backdrop on mobile */}
+          {isMobile && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-30 bg-background/60 backdrop-blur-sm"
+              onClick={toggleAiPanel}
+            />
           )}
-
-          {/* Summary tab */}
-          {activeTab === 'summary' && (
-            <div className="flex-1 flex flex-col min-h-0 px-4 pb-4">
-              <div className="flex-1 overflow-y-auto py-3">
-                {!summary && !isSummarizing && (
-                  <div className="flex flex-col items-center gap-4 mt-8">
-                    <BookOpen className="h-8 w-8 text-muted-foreground/50" />
-                    <p className="text-xs text-muted-foreground text-center font-mono">
-                      Generate a comprehensive summary of<br />
-                      <span className="text-primary font-semibold">{topic}</span>
-                    </p>
-                    <button
-                      onClick={handleSummarize}
-                      className="rounded-lg bg-primary px-5 py-2.5 text-xs font-display font-semibold text-primary-foreground hover:brightness-110 active:scale-95 transition-all"
-                    >
-                      Generate Summary
-                    </button>
-                  </div>
-                )}
-                {(summary || isSummarizing) && (
-                  <div className="prose prose-sm prose-invert max-w-none text-xs font-mono leading-relaxed
-                    [&_p]:my-2
-                    [&_h3]:text-sm [&_h3]:font-display [&_h3]:text-accent [&_h3]:mt-4 [&_h3]:mb-2
-                    [&_h2]:text-sm [&_h2]:font-display [&_h2]:text-accent [&_h2]:mt-4 [&_h2]:mb-2
-                    [&_strong]:text-primary
-                    [&_ul]:my-2 [&_ol]:my-2 [&_li]:my-1
-                    [&_a]:text-primary [&_a]:underline">
-                    <ReactMarkdown>{summary}</ReactMarkdown>
-                    {isSummarizing && (
-                      <div className="flex items-center gap-2 mt-3">
-                        <Loader2 className="h-3 w-3 animate-spin text-primary" />
-                        <span className="text-[10px] text-muted-foreground">Generating...</span>
-                      </div>
-                    )}
-                    <div ref={summaryEndRef} />
-                  </div>
-                )}
-              </div>
-              {summary && !isSummarizing && (
-                <button
-                  onClick={handleSummarize}
-                  className="shrink-0 flex items-center justify-center gap-2 rounded-lg cosmic-border px-3 py-2 text-xs font-mono text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <RefreshCw className="h-3 w-3" /> Regenerate Summary
-                </button>
-              )}
-            </div>
-          )}
-        </motion.div>
+          <motion.div
+            initial={panelVariants.initial}
+            animate={panelVariants.animate}
+            exit={panelVariants.exit}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className={panelClassName}
+          >
+            {panelContent}
+          </motion.div>
+        </>
       )}
     </AnimatePresence>
   );

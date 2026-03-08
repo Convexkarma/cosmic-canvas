@@ -32,7 +32,7 @@ const CardModal = () => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="fixed inset-0 z-50 flex items-center justify-center"
+          className="fixed inset-0 z-50 flex items-end md:items-center justify-center"
           onClick={handleClose}
         >
           {/* Backdrop */}
@@ -45,11 +45,11 @@ const CardModal = () => {
             exit={{ scale: 0.7, opacity: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             onClick={(e) => e.stopPropagation()}
-            className="relative z-10 w-full max-w-md mx-4"
+            className="relative z-10 w-full max-w-md mx-0 md:mx-4 mb-0 md:mb-0"
           >
             <button
               onClick={handleClose}
-              className="absolute -top-10 right-0 text-muted-foreground hover:text-foreground transition-colors"
+              className="absolute -top-10 right-4 md:right-0 text-muted-foreground hover:text-foreground transition-colors"
             >
               <X className="h-6 w-6" />
             </button>
@@ -58,21 +58,21 @@ const CardModal = () => {
             <div
               className="card-flip cursor-pointer"
               onClick={() => setFlipped(!flipped)}
-              style={{ minHeight: '280px' }}
+              style={{ minHeight: '240px' }}
             >
-              <div className={`card-flip-inner relative w-full ${flipped ? 'flipped' : ''}`} style={{ minHeight: '280px' }}>
+              <div className={`card-flip-inner relative w-full ${flipped ? 'flipped' : ''}`} style={{ minHeight: '240px' }}>
                 {/* Front */}
-                <div className="card-face absolute inset-0 rounded-xl bg-card cosmic-border p-6 glow-blue flex flex-col justify-between">
+                <div className="card-face absolute inset-0 rounded-xl md:rounded-xl rounded-b-none bg-card cosmic-border p-4 md:p-6 glow-blue flex flex-col justify-between">
                   <div>
                     <span className="text-xs text-muted-foreground font-mono uppercase tracking-wider">{card.subtopic}</span>
-                    <h2 className="font-display text-2xl font-bold text-foreground mt-2">{card.title}</h2>
+                    <h2 className="font-display text-xl md:text-2xl font-bold text-foreground mt-2">{card.title}</h2>
                   </div>
                   <p className="text-foreground/90 font-mono text-sm leading-relaxed mt-4">{card.question}</p>
                   <p className="text-xs text-muted-foreground mt-4 text-center">Click to flip →</p>
                 </div>
 
                 {/* Back */}
-                <div className="card-face card-face-back absolute inset-0 rounded-xl bg-card cosmic-border p-6 glow-violet flex flex-col justify-between">
+                <div className="card-face card-face-back absolute inset-0 rounded-xl md:rounded-xl rounded-b-none bg-card cosmic-border p-4 md:p-6 glow-violet flex flex-col justify-between">
                   <div>
                     <span className="text-xs text-accent font-mono uppercase tracking-wider">Answer</span>
                     <p className="text-foreground font-mono text-sm leading-relaxed mt-3">{card.answer}</p>
@@ -105,8 +105,8 @@ const CardModal = () => {
             )}
 
             {/* Difficulty rating */}
-            <div className="mt-3 flex items-center justify-center gap-3">
-              <span className="text-xs text-muted-foreground font-mono">Rate difficulty:</span>
+            <div className="mt-3 flex flex-wrap items-center justify-center gap-2 md:gap-3 pb-4 md:pb-0">
+              <span className="text-xs text-muted-foreground font-mono w-full text-center md:w-auto">Rate:</span>
               {(['easy', 'medium', 'hard'] as const).map((d) => {
                 const cfg = difficultyConfig[d];
                 const isActive = card.difficulty === d;
