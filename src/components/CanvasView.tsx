@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
-import { useCardStore } from '@/stores/useCardStore';
+import { useCardStore, isCardDue } from '@/stores/useCardStore';
 import { ArrowLeft, MessageCircle, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import Starfield from './Starfield';
 import CardModal from './CardModal';
@@ -45,7 +45,7 @@ const CanvasView = () => {
 
   // Calculate card positions
   const cardPositions = useMemo(() => {
-    const positions: { id: string; x: number; y: number; title: string; difficulty: string | null; subtopic: string }[] = [];
+    const positions: { id: string; x: number; y: number; title: string; difficulty: string | null; subtopic: string; isDue: boolean }[] = [];
     subtopics.forEach((st) => {
       const cardCount = st.cards.length;
       const cardRadius = 130;
@@ -60,6 +60,7 @@ const CanvasView = () => {
           title: card.title,
           difficulty: card.difficulty,
           subtopic: card.subtopic,
+          isDue: isCardDue(card),
         });
       });
     });
@@ -200,6 +201,11 @@ const CanvasView = () => {
                       maxWidth: 110,
                     }}
                   >
+                    {cp.isDue && (
+                      <span className="absolute -top-2 -right-2 rounded-full bg-cosmic-hard/90 text-[7px] font-mono text-foreground px-1.5 py-0.5 leading-none shadow-lg animate-pulse">
+                        DUE
+                      </span>
+                    )}
                     <span className="font-mono text-[10px] text-foreground leading-tight line-clamp-2 block">
                       {cp.title}
                     </span>
