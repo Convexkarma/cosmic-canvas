@@ -1,8 +1,9 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import { useCardStore, isCardDue } from '@/stores/useCardStore';
 import { ArrowLeft, MessageCircle, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
 import Starfield from './Starfield';
 import CardModal from './CardModal';
 import AiPanel from './AiPanel';
@@ -21,14 +22,28 @@ const difficultyBorder: Record<string, string> = {
 
 const CanvasView = () => {
   const { topic, subtopics, selectCard, setView, toggleAiPanel } = useCardStore();
+  const isMobile = useIsMobile();
+  const [windowSize, setWindowSize] = useState({ w: window.innerWidth, h: window.innerHeight });
+
+  useEffect(() => {
+    const onResize = () => setWindowSize({ w: window.innerWidth, h: window.innerHeight });
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  const canvasSize = 2000;
+  const center = canvasSize / 2;
+  const initialScale = isMobile ? 0.45 : 0.7;
+
+  // Correct centering: account for scale factor
+  const initialX = (windowSize.w - canvasSize * initialScale) / 2;
+  const initialY = (windowSize.h - canvasSize * initialScale) / 2;
 
   // Build connection lines data
   const lines = useMemo(() => {
     const result: { x1: number; y1: number; x2: number; y2: number }[] = [];
     subtopics.forEach((st) => {
-      // Center to subtopic
       result.push({ x1: 0, y1: 0, x2: st.x, y2: st.y });
-      // Subtopic to cards
       const cardCount = st.cards.length;
       const cardRadius = 130;
       const baseAngle = Math.atan2(st.y, st.x);
@@ -67,24 +82,21 @@ const CanvasView = () => {
     return positions;
   }, [subtopics]);
 
-  const canvasSize = 2000;
-  const center = canvasSize / 2;
-
   return (
-    <div className="fixed inset-0 overflow-hidden bg-background">
+    <div className="fixed inset-0 overflow-hidden bg-background touch-none">
       <Starfield />
 
       {/* Toolbar */}
-      <div className="absolute top-4 left-4 right-4 z-30 flex items-center justify-between pointer-events-none">
-        <div className="flex items-center gap-3 pointer-events-auto">
+      <div className="absolute top-2 left-2 right-2 md:top-4 md:left-4 md:right-4 z-30 flex items-center justify-between pointer-events-none">
+        <div className="flex items-center gap-2 md:gap-3 pointer-events-auto">
           <button
             onClick={() => setView('landing')}
             className="rounded-lg bg-card/80 cosmic-border backdrop-blur-sm p-2 text-muted-foreground hover:text-foreground transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
           </button>
-          <div className="rounded-lg bg-card/80 cosmic-border backdrop-blur-sm px-4 py-2">
-            <h2 className="font-display text-sm font-semibold text-foreground">{topic}</h2>
+          <div className="rounded-lg bg-card/80 cosmic-border backdrop-blur-sm px-3 py-1.5 md:px-4 md:py-2">
+            <h2 className="font-display text-xs md:text-sm font-semibold text-foreground truncate max-w-[150px] md:max-w-none">{topic}</h2>
           </div>
         </div>
         <button
@@ -97,17 +109,20 @@ const CanvasView = () => {
 
       {/* Canvas */}
       <TransformWrapper
-        initialScale={0.7}
-        minScale={0.3}
-        maxScale={2}
-        initialPositionX={-canvasSize / 2 + window.innerWidth / 2}
-        initialPositionY={-canvasSize / 2 + window.innerHeight / 2}
+        key={`${windowSize.w}-${windowSize.h}-${initialScale}`}
+        initialScale={initialScale}
+        minScale={0.2}
+        maxScale={2.5}
+        initialPositionX={initialX}
+        initialPositionY={initialY}
         limitToBounds={false}
+        pinch={{ step: 5 }}
+        panning={{ velocityDisabled: false }}
       >
         {({ zoomIn, zoomOut, resetTransform }) => (
           <>
-            {/* Zoom controls */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2">
+            {/* Zoom controls - hidden on mobile (use pinch), shown on desktop */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 hidden md:flex items-center gap-2">
               <button onClick={() => zoomIn()} className="rounded-lg bg-card/80 cosmic-border backdrop-blur-sm p-2 text-muted-foreground hover:text-foreground transition-colors">
                 <ZoomIn className="h-4 w-4" />
               </button>
