@@ -208,14 +208,14 @@ const CanvasView = () => {
                     transition={{ type: 'spring', damping: 20, delay: 0.6 + ci * 0.05 }}
                     onPointerDown={(e) => e.stopPropagation()}
                     onClick={(e) => { e.stopPropagation(); selectCard(cp.id); }}
-                    className={`absolute rounded-lg bg-card cosmic-border px-3 py-2 text-left transition-all hover:brightness-125 cursor-pointer ${
+                    className={`absolute rounded-lg bg-card cosmic-border px-2 md:px-3 py-1.5 md:py-2 text-left transition-all hover:brightness-125 cursor-pointer ${
                       cp.difficulty ? difficultyGlow[cp.difficulty] : 'animate-glow-pulse'
                     } ${cp.difficulty ? difficultyBorder[cp.difficulty] : ''}`}
                     style={{
-                      left: center + cp.x - 55,
-                      top: center + cp.y - 18,
-                      width: 110,
-                      maxWidth: 110,
+                      left: center + cp.x - (isMobile ? 45 : 55),
+                      top: center + cp.y - (isMobile ? 15 : 18),
+                      width: isMobile ? 90 : 110,
+                      maxWidth: isMobile ? 90 : 110,
                     }}
                   >
                     {cp.isDue && (
