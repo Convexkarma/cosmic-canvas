@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
-import { useCardStore } from '@/stores/useCardStore';
+import { useCardStore, isCardDue } from '@/stores/useCardStore';
 import { ArrowLeft, MessageCircle, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import Starfield from './Starfield';
 import CardModal from './CardModal';
