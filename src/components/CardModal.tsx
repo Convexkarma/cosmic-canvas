@@ -105,8 +105,8 @@ const CardModal = () => {
             )}
 
             {/* Difficulty rating */}
-            <div className="mt-3 flex items-center justify-center gap-3">
-              <span className="text-xs text-muted-foreground font-mono">Rate difficulty:</span>
+            <div className="mt-3 flex flex-wrap items-center justify-center gap-2 md:gap-3 pb-4 md:pb-0">
+              <span className="text-xs text-muted-foreground font-mono w-full text-center md:w-auto">Rate:</span>
               {(['easy', 'medium', 'hard'] as const).map((d) => {
                 const cfg = difficultyConfig[d];
                 const isActive = card.difficulty === d;
