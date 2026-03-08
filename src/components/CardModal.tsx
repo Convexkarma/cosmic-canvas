@@ -72,7 +72,7 @@ const CardModal = () => {
                 </div>
 
                 {/* Back */}
-                <div className="card-face card-face-back absolute inset-0 rounded-xl bg-card cosmic-border p-6 glow-violet flex flex-col justify-between">
+                <div className="card-face card-face-back absolute inset-0 rounded-xl md:rounded-xl rounded-b-none bg-card cosmic-border p-4 md:p-6 glow-violet flex flex-col justify-between">
                   <div>
                     <span className="text-xs text-accent font-mono uppercase tracking-wider">Answer</span>
                     <p className="text-foreground font-mono text-sm leading-relaxed mt-3">{card.answer}</p>
