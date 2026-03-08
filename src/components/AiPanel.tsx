@@ -161,7 +161,7 @@ const AiPanel = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          <div className="relative shrink-0 pb-safe">
+          <div className="relative shrink-0 pb-safe px-1">
             <input
               type="text"
               value={input}
@@ -169,14 +169,14 @@ const AiPanel = () => {
               onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
               placeholder="Ask a question..."
               disabled={isStreaming}
-              className="w-full rounded-lg bg-muted/30 cosmic-border px-3 py-2.5 pr-10 text-xs font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 disabled:opacity-50"
+              className="w-full rounded-lg bg-muted/30 cosmic-border px-3 py-3 md:py-2.5 pr-10 text-sm md:text-xs font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 disabled:opacity-50"
             />
             <button
               onClick={handleSend}
               disabled={isStreaming || !input.trim()}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors disabled:opacity-30"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors disabled:opacity-30"
             >
-              <Send className="h-4 w-4" />
+              <Send className="h-5 w-5 md:h-4 md:w-4" />
             </button>
           </div>
         </div>
