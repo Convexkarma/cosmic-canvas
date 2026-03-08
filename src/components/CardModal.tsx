@@ -86,8 +86,26 @@ const CardModal = () => {
               </div>
             </div>
 
+            {/* Review status */}
+            {card.nextReviewDate && (
+              <div className="mt-3 flex items-center justify-center gap-2">
+                <Clock className="h-3 w-3 text-muted-foreground" />
+                <span className={`text-[10px] font-mono ${isCardDue(card) ? 'text-cosmic-hard' : 'text-muted-foreground'}`}>
+                  {isCardDue(card)
+                    ? '⚡ Due for review now!'
+                    : `Next review: ${new Date(card.nextReviewDate).toLocaleDateString()}`
+                  }
+                </span>
+                {card.interval > 0 && (
+                  <span className="text-[10px] font-mono text-muted-foreground/60">
+                    (interval: {card.interval}d)
+                  </span>
+                )}
+              </div>
+            )}
+
             {/* Difficulty rating */}
-            <div className="mt-4 flex items-center justify-center gap-3">
+            <div className="mt-3 flex items-center justify-center gap-3">
               <span className="text-xs text-muted-foreground font-mono">Rate difficulty:</span>
               {(['easy', 'medium', 'hard'] as const).map((d) => {
                 const cfg = difficultyConfig[d];
