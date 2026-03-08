@@ -119,7 +119,7 @@ function buildSubtopics(cards: FlashCard[]): SubtopicNode[] {
 
   const names = Object.keys(groups);
   const angleStep = (2 * Math.PI) / names.length;
-  const radius = 350;
+  const radius = names.length > 6 ? 420 : 350;
 
   return names.map((name, i) => ({
     name,

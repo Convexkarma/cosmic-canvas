@@ -1,25 +1,28 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Search, Sparkles, Loader2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Search, Sparkles, Loader2, Clock, X, Trash2 } from 'lucide-react';
 import { useCardStore } from '@/stores/useCardStore';
 import { generateCards } from '@/lib/api';
 import { toast } from '@/hooks/use-toast';
+import { useTopicHistory } from '@/hooks/useTopicHistory';
 import Starfield from './Starfield';
 
 const LandingScreen = () => {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const { setTopic, setCards, setView } = useCardStore();
+  const { history, addTopic, removeTopic, clearHistory } = useTopicHistory();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim() || loading) return;
-    
+  const handleExplore = async (topicText: string) => {
+    if (!topicText.trim() || loading) return;
+
     setLoading(true);
     try {
-      const data = await generateCards(input.trim());
-      setTopic(data.topic || input.trim());
+      const data = await generateCards(topicText.trim());
+      const resolvedTopic = data.topic || topicText.trim();
+      setTopic(resolvedTopic);
       setCards(data.cards);
+      addTopic(resolvedTopic, data.cards.length, new Set(data.cards.map((c: any) => c.subtopic)).size);
       setView('canvas');
     } catch (err) {
       toast({
@@ -32,6 +35,11 @@ const LandingScreen = () => {
     }
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleExplore(input);
+  };
+
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background">
       <Starfield />
@@ -40,7 +48,7 @@ const LandingScreen = () => {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: 'easeOut' }}
-        className="relative z-10 flex flex-col items-center gap-8 px-4"
+        className="relative z-10 flex flex-col items-center gap-6 md:gap-8 px-4 w-full max-w-2xl"
       >
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
@@ -48,7 +56,7 @@ const LandingScreen = () => {
           transition={{ delay: 0.2, duration: 0.6 }}
           className="flex items-center gap-3"
         >
-          <Sparkles className="h-8 w-8 text-primary animate-pulse-glow" />
+          <Sparkles className="h-6 w-6 md:h-8 md:w-8 text-primary animate-pulse-glow" />
           <h1 className="font-display text-4xl sm:text-5xl font-bold tracking-tight text-foreground md:text-7xl">
             Cosmic<span className="text-primary">Cards</span>
           </h1>
@@ -91,7 +99,7 @@ const LandingScreen = () => {
                 {loading ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    Generating…
+                    <span className="hidden sm:inline">Generating…</span>
                   </>
                 ) : (
                   'Explore'
@@ -118,6 +126,60 @@ const LandingScreen = () => {
             </button>
           ))}
         </motion.div>
+
+        {/* Saved Topics History */}
+        <AnimatePresence>
+          {history.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ delay: 1.2, duration: 0.6 }}
+              className="w-full max-w-lg mt-2"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span className="text-xs font-mono text-muted-foreground uppercase tracking-wider">Recent Topics</span>
+                </div>
+                <button
+                  onClick={clearHistory}
+                  className="text-[10px] font-mono text-muted-foreground/50 hover:text-destructive transition-colors flex items-center gap-1"
+                >
+                  <Trash2 className="h-3 w-3" />
+                  Clear
+                </button>
+              </div>
+              <div className="space-y-2">
+                {history.slice(0, 5).map((item, i) => (
+                  <motion.div
+                    key={item.topic}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 1.3 + i * 0.05 }}
+                    className="group flex items-center gap-3 rounded-lg bg-card/40 cosmic-border px-3 py-2.5 hover:bg-card/70 transition-all cursor-pointer"
+                    onClick={() => handleExplore(item.topic)}
+                  >
+                    <div className="flex-1 min-w-0">
+                      <span className="font-display text-sm font-medium text-foreground truncate block">
+                        {item.topic}
+                      </span>
+                      <span className="text-[10px] font-mono text-muted-foreground">
+                        {item.cardCount} cards · {item.subtopicCount} branches · {new Date(item.timestamp).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); removeTopic(item.topic); }}
+                      className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-all shrink-0"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
     </div>
   );

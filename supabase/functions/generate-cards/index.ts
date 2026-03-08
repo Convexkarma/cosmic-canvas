@@ -30,7 +30,7 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: `You are an expert educator. Given a topic, generate 12-20 high-quality flashcards organized into 4-6 subtopics. Return ONLY a valid JSON object (no markdown, no code fences) with this exact structure:
+            content: `You are an expert educator. Given a topic, generate 25-35 high-quality flashcards organized into 6-9 subtopics. Go deep — cover fundamentals, intermediate concepts, advanced topics, real-world applications, history, and edge cases. Return ONLY a valid JSON object (no markdown, no code fences) with this exact structure:
 {
   "topic": "the topic",
   "cards": [
@@ -45,7 +45,7 @@ serve(async (req) => {
     }
   ]
 }
-Use numbered IDs like "1", "2", etc. Include real Wikipedia or educational source URLs when possible. Cover the topic thoroughly from fundamentals to advanced concepts.`
+Use numbered IDs like "1", "2", etc. Include real Wikipedia or educational source URLs when possible. Aim for 3-5 cards per subtopic. Cover the topic thoroughly from fundamentals to advanced concepts, including practical applications, common misconceptions, and historical context.`
           },
           { role: "user", content: `Generate flashcards for the topic: "${topic}"` }
         ],
