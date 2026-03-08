@@ -45,10 +45,10 @@ const CanvasView = () => {
     subtopics.forEach((st) => {
       result.push({ x1: 0, y1: 0, x2: st.x, y2: st.y });
       const cardCount = st.cards.length;
-      const cardRadius = 130;
+      const cardRadius = cardCount > 4 ? 160 : 130;
       const baseAngle = Math.atan2(st.y, st.x);
       st.cards.forEach((_, ci) => {
-        const spread = Math.PI * 0.6;
+        const spread = cardCount > 4 ? Math.PI * 0.8 : Math.PI * 0.6;
         const angle = baseAngle - spread / 2 + (spread / Math.max(cardCount - 1, 1)) * ci;
         const cx = st.x + Math.cos(angle) * cardRadius;
         const cy = st.y + Math.sin(angle) * cardRadius;
@@ -63,10 +63,10 @@ const CanvasView = () => {
     const positions: { id: string; x: number; y: number; title: string; difficulty: string | null; subtopic: string; isDue: boolean }[] = [];
     subtopics.forEach((st) => {
       const cardCount = st.cards.length;
-      const cardRadius = 130;
+      const cardRadius = cardCount > 4 ? 160 : 130;
       const baseAngle = Math.atan2(st.y, st.x);
       st.cards.forEach((card, ci) => {
-        const spread = Math.PI * 0.6;
+        const spread = cardCount > 4 ? Math.PI * 0.8 : Math.PI * 0.6;
         const angle = baseAngle - spread / 2 + (spread / Math.max(cardCount - 1, 1)) * ci;
         positions.push({
           id: card.id,
