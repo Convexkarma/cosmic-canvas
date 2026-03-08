@@ -1,20 +1,35 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Sparkles } from 'lucide-react';
-import { useCardStore, MOCK_CARDS } from '@/stores/useCardStore';
+import { Search, Sparkles, Loader2 } from 'lucide-react';
+import { useCardStore } from '@/stores/useCardStore';
+import { generateCards } from '@/lib/api';
+import { toast } from '@/hooks/use-toast';
 import Starfield from './Starfield';
 
 const LandingScreen = () => {
   const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
   const { setTopic, setCards, setView } = useCardStore();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim()) return;
-    setTopic(input.trim());
-    // For now, use mock data — will wire API later
-    setCards(MOCK_CARDS);
-    setView('canvas');
+    if (!input.trim() || loading) return;
+    
+    setLoading(true);
+    try {
+      const data = await generateCards(input.trim());
+      setTopic(data.topic || input.trim());
+      setCards(data.cards);
+      setView('canvas');
+    } catch (err) {
+      toast({
+        title: 'Generation failed',
+        description: err instanceof Error ? err.message : 'Something went wrong',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -65,13 +80,22 @@ const LandingScreen = () => {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="What do you want to learn today?"
-                className="flex-1 bg-transparent px-4 py-4 text-foreground placeholder:text-muted-foreground focus:outline-none font-mono text-sm"
+                disabled={loading}
+                className="flex-1 bg-transparent px-4 py-4 text-foreground placeholder:text-muted-foreground focus:outline-none font-mono text-sm disabled:opacity-50"
               />
               <button
                 type="submit"
-                className="m-2 rounded-lg bg-primary px-5 py-2 font-display text-sm font-semibold text-primary-foreground transition-all hover:brightness-110 active:scale-95"
+                disabled={loading || !input.trim()}
+                className="m-2 rounded-lg bg-primary px-5 py-2 font-display text-sm font-semibold text-primary-foreground transition-all hover:brightness-110 active:scale-95 disabled:opacity-50 flex items-center gap-2"
               >
-                Explore
+                {loading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Generating…
+                  </>
+                ) : (
+                  'Explore'
+                )}
               </button>
             </div>
           </div>
@@ -86,10 +110,9 @@ const LandingScreen = () => {
           {['Quantum Entanglement', 'Neural Networks', 'Roman Empire', 'Blockchain'].map((t) => (
             <button
               key={t}
-              onClick={() => {
-                setInput(t);
-              }}
-              className="rounded-full cosmic-border bg-card/50 px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground hover:border-primary/50"
+              onClick={() => setInput(t)}
+              disabled={loading}
+              className="rounded-full cosmic-border bg-card/50 px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground hover:border-primary/50 disabled:opacity-50"
             >
               {t}
             </button>

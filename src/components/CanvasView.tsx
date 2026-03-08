@@ -218,6 +218,7 @@ const CanvasView = () => {
       </TransformWrapper>
 
       <CardModal />
+      <AiPanel />
     </div>
   );
 };
