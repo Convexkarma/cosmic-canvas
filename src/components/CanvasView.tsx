@@ -118,6 +118,8 @@ const CanvasView = () => {
         limitToBounds={false}
         pinch={{ step: 5 }}
         panning={{ velocityDisabled: false }}
+        smooth={true}
+        wheel={{ smoothStep: 0.04 }}
       >
         {({ zoomIn, zoomOut, resetTransform }) => (
           <>
