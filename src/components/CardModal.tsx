@@ -58,9 +58,9 @@ const CardModal = () => {
             <div
               className="card-flip cursor-pointer"
               onClick={() => setFlipped(!flipped)}
-              style={{ minHeight: '280px' }}
+              style={{ minHeight: '240px' }}
             >
-              <div className={`card-flip-inner relative w-full ${flipped ? 'flipped' : ''}`} style={{ minHeight: '280px' }}>
+              <div className={`card-flip-inner relative w-full ${flipped ? 'flipped' : ''}`} style={{ minHeight: '240px' }}>
                 {/* Front */}
                 <div className="card-face absolute inset-0 rounded-xl bg-card cosmic-border p-6 glow-blue flex flex-col justify-between">
                   <div>
