@@ -167,13 +167,13 @@ const CanvasView = () => {
                   transition={{ type: 'spring', damping: 20, delay: 0.1 }}
                   className="absolute rounded-full bg-card cosmic-border glow-blue flex items-center justify-center animate-glow-pulse"
                   style={{
-                    left: center - 60,
-                    top: center - 60,
-                    width: 120,
-                    height: 120,
+                    left: center - (isMobile ? 45 : 60),
+                    top: center - (isMobile ? 45 : 60),
+                    width: isMobile ? 90 : 120,
+                    height: isMobile ? 90 : 120,
                   }}
                 >
-                  <span className="font-display text-sm font-bold text-foreground text-center px-3 leading-tight">
+                  <span className="font-display text-xs md:text-sm font-bold text-foreground text-center px-2 md:px-3 leading-tight">
                     {topic}
                   </span>
                 </motion.div>
