@@ -1,1 +1,10 @@
 project_id = "riposiimonnsxilqkofk"
+
+[functions.generate-cards]
+verify_jwt = false
+
+[functions.chat]
+verify_jwt = false
+
+[functions.summarize]
+verify_jwt = false
