@@ -188,7 +188,8 @@ const CanvasView = () => {
                     initial={{ scale: 0, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ type: 'spring', damping: 20, delay: 0.6 + ci * 0.05 }}
-                    onClick={() => selectCard(cp.id)}
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={(e) => { e.stopPropagation(); selectCard(cp.id); }}
                     className={`absolute rounded-lg bg-card cosmic-border px-3 py-2 text-left transition-all hover:brightness-125 cursor-pointer ${
                       cp.difficulty ? difficultyGlow[cp.difficulty] : 'animate-glow-pulse'
                     } ${cp.difficulty ? difficultyBorder[cp.difficulty] : ''}`}
