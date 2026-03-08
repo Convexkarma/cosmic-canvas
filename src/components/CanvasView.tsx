@@ -63,10 +63,10 @@ const CanvasView = () => {
     const positions: { id: string; x: number; y: number; title: string; difficulty: string | null; subtopic: string; isDue: boolean }[] = [];
     subtopics.forEach((st) => {
       const cardCount = st.cards.length;
-      const cardRadius = 130;
+      const cardRadius = cardCount > 4 ? 160 : 130;
       const baseAngle = Math.atan2(st.y, st.x);
       st.cards.forEach((card, ci) => {
-        const spread = Math.PI * 0.6;
+        const spread = cardCount > 4 ? Math.PI * 0.8 : Math.PI * 0.6;
         const angle = baseAngle - spread / 2 + (spread / Math.max(cardCount - 1, 1)) * ci;
         positions.push({
           id: card.id,
