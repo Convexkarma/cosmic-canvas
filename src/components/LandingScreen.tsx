@@ -49,7 +49,7 @@ const LandingScreen = () => {
           className="flex items-center gap-3"
         >
           <Sparkles className="h-8 w-8 text-primary animate-pulse-glow" />
-          <h1 className="font-display text-5xl font-bold tracking-tight text-foreground md:text-7xl">
+          <h1 className="font-display text-4xl sm:text-5xl font-bold tracking-tight text-foreground md:text-7xl">
             Cosmic<span className="text-primary">Cards</span>
           </h1>
         </motion.div>
@@ -58,7 +58,7 @@ const LandingScreen = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.6 }}
-          className="max-w-md text-center text-lg text-muted-foreground"
+          className="max-w-md text-center text-base md:text-lg text-muted-foreground"
         >
           AI-powered flashcards arranged as a cosmic mind-map.
           Enter any topic to explore.

@@ -118,6 +118,8 @@ const CanvasView = () => {
         limitToBounds={false}
         pinch={{ step: 5 }}
         panning={{ velocityDisabled: false }}
+        smooth={true}
+        wheel={{ smoothStep: 0.04 }}
       >
         {({ zoomIn, zoomOut, resetTransform }) => (
           <>
@@ -165,13 +167,13 @@ const CanvasView = () => {
                   transition={{ type: 'spring', damping: 20, delay: 0.1 }}
                   className="absolute rounded-full bg-card cosmic-border glow-blue flex items-center justify-center animate-glow-pulse"
                   style={{
-                    left: center - 60,
-                    top: center - 60,
-                    width: 120,
-                    height: 120,
+                    left: center - (isMobile ? 45 : 60),
+                    top: center - (isMobile ? 45 : 60),
+                    width: isMobile ? 90 : 120,
+                    height: isMobile ? 90 : 120,
                   }}
                 >
-                  <span className="font-display text-sm font-bold text-foreground text-center px-3 leading-tight">
+                  <span className="font-display text-xs md:text-sm font-bold text-foreground text-center px-2 md:px-3 leading-tight">
                     {topic}
                   </span>
                 </motion.div>
@@ -206,14 +208,14 @@ const CanvasView = () => {
                     transition={{ type: 'spring', damping: 20, delay: 0.6 + ci * 0.05 }}
                     onPointerDown={(e) => e.stopPropagation()}
                     onClick={(e) => { e.stopPropagation(); selectCard(cp.id); }}
-                    className={`absolute rounded-lg bg-card cosmic-border px-3 py-2 text-left transition-all hover:brightness-125 cursor-pointer ${
+                    className={`absolute rounded-lg bg-card cosmic-border px-2 md:px-3 py-1.5 md:py-2 text-left transition-all hover:brightness-125 cursor-pointer ${
                       cp.difficulty ? difficultyGlow[cp.difficulty] : 'animate-glow-pulse'
                     } ${cp.difficulty ? difficultyBorder[cp.difficulty] : ''}`}
                     style={{
-                      left: center + cp.x - 55,
-                      top: center + cp.y - 18,
-                      width: 110,
-                      maxWidth: 110,
+                      left: center + cp.x - (isMobile ? 45 : 55),
+                      top: center + cp.y - (isMobile ? 15 : 18),
+                      width: isMobile ? 90 : 110,
+                      maxWidth: isMobile ? 90 : 110,
                     }}
                   >
                     {cp.isDue && (
@@ -221,7 +223,7 @@ const CanvasView = () => {
                         DUE
                       </span>
                     )}
-                    <span className="font-mono text-[10px] text-foreground leading-tight line-clamp-2 block">
+                    <span className="font-mono text-[9px] md:text-[10px] text-foreground leading-tight line-clamp-2 block">
                       {cp.title}
                     </span>
                     {cp.difficulty && (
