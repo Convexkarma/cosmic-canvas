@@ -64,11 +64,11 @@ const CardModal = () => {
                 {/* Front */}
                 <div className="card-face absolute inset-0 rounded-xl md:rounded-xl rounded-b-none bg-card cosmic-border p-4 md:p-6 glow-blue flex flex-col justify-between">
                   <div>
-                    <span className="text-xs text-muted-foreground font-mono uppercase tracking-wider">{card.subtopic}</span>
-                    <h2 className="font-display text-xl md:text-2xl font-bold text-foreground mt-2">{card.title}</h2>
+                    <span className="text-[10px] md:text-xs text-muted-foreground font-mono uppercase tracking-wider">{card.subtopic}</span>
+                    <h2 className="font-display text-lg md:text-2xl font-bold text-foreground mt-2">{card.title}</h2>
                   </div>
-                  <p className="text-foreground/90 font-mono text-sm leading-relaxed mt-4">{card.question}</p>
-                  <p className="text-xs text-muted-foreground mt-4 text-center">Click to flip →</p>
+                  <p className="text-foreground/90 font-mono text-xs md:text-sm leading-relaxed mt-4">{card.question}</p>
+                  <p className="text-[10px] md:text-xs text-muted-foreground mt-4 text-center">Tap to flip →</p>
                 </div>
 
                 {/* Back */}
