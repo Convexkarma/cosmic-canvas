@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
-import { useCardStore, type FlashCard, type Difficulty } from '@/stores/useCardStore';
+import { X, Clock } from 'lucide-react';
+import { useCardStore, type FlashCard, type Difficulty, isCardDue } from '@/stores/useCardStore';
 import { useState } from 'react';
 
 const difficultyConfig: Record<string, { label: string; glowClass: string; colorClass: string }> = {
