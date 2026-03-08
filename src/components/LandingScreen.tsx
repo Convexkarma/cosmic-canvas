@@ -58,7 +58,7 @@ const LandingScreen = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.6 }}
-          className="max-w-md text-center text-lg text-muted-foreground"
+          className="max-w-md text-center text-base md:text-lg text-muted-foreground"
         >
           AI-powered flashcards arranged as a cosmic mind-map.
           Enter any topic to explore.
