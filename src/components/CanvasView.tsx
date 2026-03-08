@@ -223,7 +223,7 @@ const CanvasView = () => {
                         DUE
                       </span>
                     )}
-                    <span className="font-mono text-[10px] text-foreground leading-tight line-clamp-2 block">
+                    <span className="font-mono text-[9px] md:text-[10px] text-foreground leading-tight line-clamp-2 block">
                       {cp.title}
                     </span>
                     {cp.difficulty && (
