@@ -14,6 +14,8 @@ const LandingScreen = () => {
   const [loading, setLoading] = useState(false);
   const { setTopic, setCards, setView } = useCardStore();
   const { history, addTopic, removeTopic, clearHistory } = useTopicHistory();
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const handleExplore = async (topicText: string) => {
     if (!topicText.trim() || loading) return;
