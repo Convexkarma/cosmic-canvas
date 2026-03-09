@@ -25,8 +25,12 @@ const CanvasView = () => {
   const isMobile = useIsMobile();
   const [windowSize, setWindowSize] = useState({ w: window.innerWidth, h: window.innerHeight });
   const [showTooltip, setShowTooltip] = useState(true);
-  const isMobile = useIsMobile();
-  const [windowSize, setWindowSize] = useState({ w: window.innerWidth, h: window.innerHeight });
+
+  // Auto-hide tooltip after 5 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => setShowTooltip(false), 5000);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const onResize = () => setWindowSize({ w: window.innerWidth, h: window.innerHeight });
