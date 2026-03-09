@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Sparkles, Loader2, Clock, X, Trash2 } from 'lucide-react';
+import { Search, Sparkles, Loader2, Clock, X, Trash2, LogIn, LogOut, User } from 'lucide-react';
 import { useCardStore } from '@/stores/useCardStore';
 import { generateCards } from '@/lib/api';
 import { toast } from '@/hooks/use-toast';
 import { useTopicHistory } from '@/hooks/useTopicHistory';
+import { useAuth } from '@/hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 import Starfield from './Starfield';
 
 const LandingScreen = () => {
