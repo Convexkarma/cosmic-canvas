@@ -1,8 +1,8 @@
-import { useMemo, useState, useEffect, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { useMemo, useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import { useCardStore, isCardDue } from '@/stores/useCardStore';
-import { ArrowLeft, MessageCircle, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
+import { ArrowLeft, MessageCircle, ZoomIn, ZoomOut, RotateCcw, BookOpen, Sparkles } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import Starfield from './Starfield';
 import CardModal from './CardModal';
@@ -24,6 +24,13 @@ const CanvasView = () => {
   const { topic, subtopics, selectCard, setView, toggleAiPanel } = useCardStore();
   const isMobile = useIsMobile();
   const [windowSize, setWindowSize] = useState({ w: window.innerWidth, h: window.innerHeight });
+  const [showTooltip, setShowTooltip] = useState(true);
+
+  // Auto-hide tooltip after 5 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => setShowTooltip(false), 5000);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const onResize = () => setWindowSize({ w: window.innerWidth, h: window.innerHeight });
@@ -99,12 +106,42 @@ const CanvasView = () => {
             <h2 className="font-display text-xs md:text-sm font-semibold text-foreground truncate max-w-[150px] md:max-w-none">{topic}</h2>
           </div>
         </div>
-        <button
-          onClick={toggleAiPanel}
-          className="pointer-events-auto rounded-lg bg-card/80 cosmic-border backdrop-blur-sm p-2 text-muted-foreground hover:text-primary transition-colors"
-        >
-          <MessageCircle className="h-4 w-4" />
-        </button>
+        <div className="relative pointer-events-auto">
+          <AnimatePresence>
+            {showTooltip && (
+              <motion.div
+                initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.9 }}
+                transition={{ type: 'spring', damping: 20 }}
+                className="absolute right-0 top-full mt-2 w-52 rounded-xl bg-card/95 cosmic-border backdrop-blur-xl p-3 shadow-lg z-50"
+              >
+                <div className="absolute -top-1.5 right-4 w-3 h-3 rotate-45 bg-card/95 cosmic-border border-b-0 border-r-0" />
+                <div className="flex items-center gap-2 mb-2">
+                  <Sparkles className="h-3.5 w-3.5 text-primary" />
+                  <span className="font-display text-xs font-semibold text-foreground">AI Assistant</span>
+                </div>
+                <p className="text-[10px] font-mono text-muted-foreground leading-relaxed mb-2">
+                  Chat, ask questions & get summaries about your topic!
+                </p>
+                <div className="flex gap-1.5">
+                  <span className="flex items-center gap-1 rounded-md bg-primary/10 px-1.5 py-0.5 text-[9px] font-mono text-primary">
+                    <MessageCircle className="h-2.5 w-2.5" /> Chat
+                  </span>
+                  <span className="flex items-center gap-1 rounded-md bg-accent/10 px-1.5 py-0.5 text-[9px] font-mono text-accent">
+                    <BookOpen className="h-2.5 w-2.5" /> Summary
+                  </span>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          <button
+            onClick={() => { setShowTooltip(false); toggleAiPanel(); }}
+            className="rounded-xl bg-primary/20 cosmic-border backdrop-blur-sm p-2.5 md:p-3 text-primary hover:bg-primary/30 hover:scale-105 transition-all shadow-lg shadow-primary/10 animate-glow-pulse"
+          >
+            <MessageCircle className="h-5 w-5 md:h-6 md:w-6" />
+          </button>
+        </div>
       </div>
 
       {/* Canvas */}
