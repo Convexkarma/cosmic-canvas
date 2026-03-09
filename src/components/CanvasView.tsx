@@ -1,8 +1,8 @@
-import { useMemo, useState, useEffect, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { useMemo, useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import { useCardStore, isCardDue } from '@/stores/useCardStore';
-import { ArrowLeft, MessageCircle, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
+import { ArrowLeft, MessageCircle, ZoomIn, ZoomOut, RotateCcw, BookOpen, Sparkles } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import Starfield from './Starfield';
 import CardModal from './CardModal';
