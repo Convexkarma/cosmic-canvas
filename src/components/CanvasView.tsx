@@ -24,6 +24,9 @@ const CanvasView = () => {
   const { topic, subtopics, selectCard, setView, toggleAiPanel } = useCardStore();
   const isMobile = useIsMobile();
   const [windowSize, setWindowSize] = useState({ w: window.innerWidth, h: window.innerHeight });
+  const [showTooltip, setShowTooltip] = useState(true);
+  const isMobile = useIsMobile();
+  const [windowSize, setWindowSize] = useState({ w: window.innerWidth, h: window.innerHeight });
 
   useEffect(() => {
     const onResize = () => setWindowSize({ w: window.innerWidth, h: window.innerHeight });
