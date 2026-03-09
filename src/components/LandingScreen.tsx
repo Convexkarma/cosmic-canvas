@@ -48,6 +48,30 @@ const LandingScreen = () => {
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background">
       <Starfield />
 
+      {/* Auth button */}
+      <div className="absolute top-4 right-4 z-20">
+        {user ? (
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-mono text-muted-foreground hidden sm:inline truncate max-w-[150px]">
+              {user.email}
+            </span>
+            <button
+              onClick={signOut}
+              className="rounded-lg bg-card/80 cosmic-border backdrop-blur-sm px-3 py-2 text-xs font-mono text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
+            >
+              <LogOut className="h-3.5 w-3.5" /> Sign Out
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => navigate('/auth')}
+            className="rounded-lg bg-primary/20 cosmic-border backdrop-blur-sm px-4 py-2 text-xs font-display font-semibold text-primary hover:bg-primary/30 transition-all flex items-center gap-1.5"
+          >
+            <LogIn className="h-3.5 w-3.5" /> Sign In
+          </button>
+        )}
+      </div>
+
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
