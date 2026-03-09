@@ -142,6 +142,7 @@ const CanvasView = () => {
             <MessageCircle className="h-5 w-5 md:h-6 md:w-6" />
           </button>
         </div>
+      </div>
 
       {/* Canvas */}
       <TransformWrapper
