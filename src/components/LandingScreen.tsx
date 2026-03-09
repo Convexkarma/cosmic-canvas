@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Sparkles, Loader2, Clock, X, Trash2 } from 'lucide-react';
+import { Search, Sparkles, Loader2, Clock, X, Trash2, LogIn, LogOut, User } from 'lucide-react';
 import { useCardStore } from '@/stores/useCardStore';
 import { generateCards } from '@/lib/api';
 import { toast } from '@/hooks/use-toast';
 import { useTopicHistory } from '@/hooks/useTopicHistory';
+import { useAuth } from '@/hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 import Starfield from './Starfield';
 
 const LandingScreen = () => {
@@ -12,6 +14,8 @@ const LandingScreen = () => {
   const [loading, setLoading] = useState(false);
   const { setTopic, setCards, setView } = useCardStore();
   const { history, addTopic, removeTopic, clearHistory } = useTopicHistory();
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const handleExplore = async (topicText: string) => {
     if (!topicText.trim() || loading) return;
@@ -43,6 +47,30 @@ const LandingScreen = () => {
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background">
       <Starfield />
+
+      {/* Auth button */}
+      <div className="absolute top-4 right-4 z-20">
+        {user ? (
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-mono text-muted-foreground hidden sm:inline truncate max-w-[150px]">
+              {user.email}
+            </span>
+            <button
+              onClick={signOut}
+              className="rounded-lg bg-card/80 cosmic-border backdrop-blur-sm px-3 py-2 text-xs font-mono text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
+            >
+              <LogOut className="h-3.5 w-3.5" /> Sign Out
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => navigate('/auth')}
+            className="rounded-lg bg-primary/20 cosmic-border backdrop-blur-sm px-4 py-2 text-xs font-display font-semibold text-primary hover:bg-primary/30 transition-all flex items-center gap-1.5"
+          >
+            <LogIn className="h-3.5 w-3.5" /> Sign In
+          </button>
+        )}
+      </div>
 
       <motion.div
         initial={{ opacity: 0, y: 30 }}
