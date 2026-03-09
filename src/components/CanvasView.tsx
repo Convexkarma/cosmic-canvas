@@ -110,10 +110,10 @@ const CanvasView = () => {
           <AnimatePresence>
             {showTooltip && (
               <motion.div
-                initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                initial={{ opacity: 0, y: 8, scale: 0.85 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 10, scale: 0.9 }}
-                transition={{ type: 'spring', damping: 20 }}
+                exit={{ opacity: 0, y: 6, scale: 0.9 }}
+                transition={{ type: 'spring', damping: 22, stiffness: 180, mass: 0.8 }}
                 className="absolute right-0 top-full mt-2 w-52 rounded-xl bg-card/95 cosmic-border backdrop-blur-xl p-3 shadow-lg z-50"
               >
                 <div className="absolute -top-1.5 right-4 w-3 h-3 rotate-45 bg-card/95 cosmic-border border-b-0 border-r-0" />
@@ -137,7 +137,7 @@ const CanvasView = () => {
           </AnimatePresence>
           <button
             onClick={() => { setShowTooltip(false); toggleAiPanel(); }}
-            className="rounded-xl bg-primary/20 cosmic-border backdrop-blur-sm p-2.5 md:p-3 text-primary hover:bg-primary/30 hover:scale-105 transition-all shadow-lg shadow-primary/10 animate-glow-pulse"
+            className="rounded-xl bg-primary/20 cosmic-border backdrop-blur-sm p-2.5 md:p-3 text-primary hover:bg-primary/30 transition-all shadow-lg shadow-primary/10 animate-gentle-bounce"
           >
             <MessageCircle className="h-5 w-5 md:h-6 md:w-6" />
           </button>
