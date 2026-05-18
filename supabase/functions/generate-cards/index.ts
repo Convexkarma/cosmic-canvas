@@ -30,7 +30,7 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: `You are an expert educator. Given a topic, generate 25-35 high-quality flashcards organized into 6-9 subtopics. Go deep — cover fundamentals, intermediate concepts, advanced topics, real-world applications, history, and edge cases. Return ONLY a valid JSON object (no markdown, no code fences) with this exact structure:
+            content: `You are an expert educator. Given a topic, generate 48-72 high-quality flashcards organized into 6-9 subtopics, with 7-10 cards per subtopic. Each card must be substantive, specific, and non-redundant — go deep into fundamentals, intermediate concepts, advanced topics, real-world applications, history, edge cases, common misconceptions, and notable examples. Avoid surface-level or duplicate questions. Return ONLY a valid JSON object (no markdown, no code fences) with this exact structure:
 {
   "topic": "the topic",
   "cards": [
