@@ -26,11 +26,11 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: "google/gemini-3.1-flash-lite-preview",
         messages: [
           {
             role: "system",
-            content: `You are an expert educator. Given a topic, generate 28-35 high-quality flashcards organized into 5-7 subtopics, with 4-6 cards per subtopic. Each card must be substantive, specific, and non-redundant — go deep into fundamentals, intermediate concepts, advanced topics, real-world applications, history, edge cases, common misconceptions, and notable examples. Avoid surface-level or duplicate questions. Return ONLY a valid JSON object (no markdown, no code fences) with this exact structure:
+            content: `You are an expert educator. Given a topic, generate 60-80 high-quality flashcards organized into 8-12 subtopics, with 6-10 cards per subtopic. Each card must be substantive, specific, and non-redundant — go deep into fundamentals, intermediate concepts, advanced topics, real-world applications, history, edge cases, common misconceptions, and notable examples. Avoid surface-level or duplicate questions. Return ONLY a valid JSON object (no markdown, no code fences) with this exact structure:
 {
   "topic": "the topic",
   "cards": [
@@ -45,7 +45,7 @@ serve(async (req) => {
     }
   ]
 }
-Use numbered IDs like "1", "2", etc. Include real Wikipedia or educational source URLs when possible. Generate 4-6 distinct, non-overlapping cards per subtopic. Each answer should be 3-5 sentences with concrete details, examples, or mechanisms — not generic definitions. Cover the topic thoroughly from fundamentals to advanced concepts, including practical applications, common misconceptions, historical context, and edge cases.`
+Use numbered IDs like "1", "2", etc. Include real Wikipedia or educational source URLs when possible. Generate 6-10 distinct, non-overlapping cards per subtopic. Each answer should be 2-4 sentences with concrete details, examples, or mechanisms — not generic definitions. Cover the topic thoroughly from fundamentals to advanced concepts, including practical applications, common misconceptions, historical context, and edge cases.`
           },
           { role: "user", content: `Generate flashcards for the topic: "${topic}"` }
         ],
