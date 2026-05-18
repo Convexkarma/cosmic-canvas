@@ -45,7 +45,7 @@ serve(async (req) => {
     }
   ]
 }
-Use numbered IDs like "1", "2", etc. Include real Wikipedia or educational source URLs when possible. Aim for 3-5 cards per subtopic. Cover the topic thoroughly from fundamentals to advanced concepts, including practical applications, common misconceptions, and historical context.`
+Use numbered IDs like "1", "2", etc. Include real Wikipedia or educational source URLs when possible. Generate 7-10 distinct, non-overlapping cards per subtopic. Each answer should be 3-5 sentences with concrete details, examples, or mechanisms — not generic definitions. Cover the topic thoroughly from fundamentals to advanced concepts, including practical applications, common misconceptions, historical context, and edge cases.`
           },
           { role: "user", content: `Generate flashcards for the topic: "${topic}"` }
         ],
